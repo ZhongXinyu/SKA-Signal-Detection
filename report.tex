@@ -1,0 +1,244 @@
+\documentclass[10pt,a4paper,twocolumn]{article}
+
+\usepackage{import}
+\usepackage{amssymb}
+\import{../../00Notes_and_Summaries/Template/}{format.tex}
+
+\newcommand{\topic}{Astronomy in the SKA era: SKA-low mini project}
+
+\begin{document}
+
+\title{\topic}
+\begin{titlepage}
+    \maketitle
+\end{titlepage}
+
+\newpage
+
+\section*{Introduction}
+
+\section{Calibration Equation}
+The calibration equation is given by:
+\begin{equation}
+    \vb{R} = \vb{G}\vb{M}\vb{G}^{H}
+\end{equation}
+where $\vb{R}$ is the measured visibility, $\vb{G}$ is the calibration matrix, $\vb{M}$ is the true visibility, and $\vb{G}^{H}$ is the Hermitian transpose of $\vb{G}$. 
+
+In this equation, $\vb{R}$ is a Hermitian matrix. The reasoning is as follows:
+
+$\vb{R_{ij}}$ measures the time-cross correlation between measured voltages $v_i$ and $v_j$ from two antennas $i$ and $j$. Given that the phase difference from $i$ to $j$ is $\phi_{ij}$, the phase difference from $j$ to $i$ is $\phi_{ji} = -\phi_{ij}$.Therefore, $\vb{R}$ is a Hermitian matrix, i.e. $\vb{R}_{ij} = \vb{R}_{ji}^{*}$
+
+Inverse the calibration equation we get:
+\begin{equation}
+    \vb{M} = \vb{G}^{-1}\vb{R}(\vb{G}^{H})^{-1}
+\end{equation}
+Taking the Hermitian transpose of the equation above, we get:
+\begin{align}
+    \vb{M}^{H} &= (\vb{G}^{-1}\vb{R}(\vb{G}^{H})^{-1})^{H}\\
+    &= \vb{G}^{-1}\vb{R}^{H}(\vb{G}^{-1})^{H}\\
+    &= \vb{M}
+\end{align}
+where we used the fact that $(\vb{G}^{H})^{-1} = (\vb{G}^{-1})^{H}$ and $\vb{R}^{H} = \vb{R}$.
+
+We obtain the fact that the model $\vb{M}$ should also be a Hermitian matrix.
+
+Given that the autocorrelation matrix $\vb{R}_{ii}$ are strongly contaminated by the noise, we can then set the diagonal elements of $\vb{R}$ to zero. Consequently, the model $\vb{M}$ should also have zero diagonal elements.
+
+Figure \ref{fig:R_M_AEP_M_EEPs} shows the plot of log scale of absolute value of $\vb{R}$, $\vb{M}_{AEPs}$, and $\vb{M}_{EEPs}$.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/R_M_AEP_M_EEPs.png}
+    \caption{The plot of log scale of absolute value of $\vb{R}$, $\vb{M}_{AEP}$, and $\vb{M}_{EEPs}$. The horizontal and vertical axis are the antenna indices. The logarithmic value of the diagonal terms are shown as the empty diagonal, as their log scale is negative infinity.}
+    \label{fig:R_M_AEP_M_EEPs}
+\end{figure}
+
+From the plot in Fig.~\ref{fig:R_M_AEP_M_EEPs}, we see that the diagonal elements are zero, hence the empty diagonal as their log scale is negative infinity. The absolute value are symmetric about the diagonal, which is consistent with the fact that $\vb{R}$, $\vb{M}_{AEP}$, and $\vb{M}_{EEPs}$ are Hermitian matrices.
+
+When applying a phase factor of $e^{j\phi}$ to the calibration term, i.e. $\vb{G'} = \vb{G}e^{j\phi}$we get:
+\begin{align*}
+        \vb{G'}\vb{M}\vb{G'}^{H}
+        &= \vb{G}e^{j\phi}\vb{M}(\vb{G}e^{j\phi})^{H}\\
+        &= e^{j\phi}\vb{G}\vb{M}\vb{G}^{H}e^{-j\phi}\\
+        &= \vb{G}\vb{M}\vb{G}^{H}
+\end{align*}
+Therefore the residual error 
+\begin{equation}
+    ||\vb{R} - \vb{G}\vb{M}\vb{G}^{H}||_{F}
+    \label{eq:F_norm_error}
+\end{equation}
+is invariant under multiplication of a phase factor.
+This means that we would find infinitely many solutions of gains to the calibration equation, each differing by a global phase factor. 
+
+\section{EEP and AEP}
+In this section, we compare the power of embedded element pattern (EEP) and average element pattern (AEP) for the 256-element array. The EEP is the power pattern of a single element, while the AEP is the average power pattern of the array.
+
+The plot of 256 EEPs and the AEP is shown in Fig.~\ref{fig:EEPs_and_AEP}. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/EEPs_and_AEP.png}
+    \caption{The plot of 256 EEPs and the AEP. The EEP is the power pattern of a single element, while the AEP is the average power pattern of the array.}
+    \label{fig:EEPs_and_AEP}
+\end{figure}
+
+The plot in Fig.~\ref{fig:EEPs_and_AEP} shows the following results: The variability of the EEPs is small at low absolute $\theta$ value (\~5dbV between the maximum and minimum value at $\theta = 0$) while large at high absolute $\theta$ value (\~50dbV between the maximum and minimum value at $\theta = 0$)
+
+\section{\textit{StEFCal} Algorithm}
+The EEP in the 
+
+The \textit{StEFCal} algorithm is implemented using python, using the algorithm described in Algo.~\ref{algo:stefcal_algorithm}. 
+
+\begin{algorithm}
+\caption{Algorithm StEFCal}
+\begin{algorithmic}[1]
+\State Initiate $G^{[0]}$; $G^{[0]} = I$ is adequate in most cases
+\For{$i = 1, 2, \ldots, i_{\max}$}
+    \For{$p = 1, 2, \ldots, P$}
+        \State $z \leftarrow G^{[i-1]} \cdot M_{:,p} = g^{[i-1]} \odot M_{:,p}$
+        \State $g_p \leftarrow (R_{:,p}^H \cdot z)/(z^H \cdot z)$
+    \EndFor
+    \If{$\text{mod}_2(i) = 0$}
+        \If{$\|g^{[i]} - g^{[i-1]}\|_F / \|g^{[i]}\|_F \leq \tau$}
+            \State Convergence reached
+        \Else
+            \State $G^{[i]} \leftarrow (G^{[i]} + G^{[i-1]})/2$
+        \EndIf
+    \EndIf
+\EndFor
+\label{algo:stefcal_algorithm}
+\end{algorithmic}
+\end{algorithm}
+
+
+One practical issue with the algorithm is that the algorithm may not always converge as the gain matrix could oscillate between two values. The issue was resolved in the original paper by updating the gain with an average of the gain matrix from the previous iteration and the current iteration.
+
+The solution to the problem is that at every even iteration, the algorithm checks for convergence. The algorithm converges if the percentage change in the gain matrix is less than the threshold $\tau$. If the algorithm does not converge, the gain matrix is updated by taking the average of the gain matrix from the previous iteration and the current iteration. 
+
+The threshold $\tau$ in the \textit{StEFCal} algorithm is set to $10^{-5}$.It takes 230 iterations to converge if we use $M_{AEP}$ and 192 iterations to converge if we use $M_{EEPs}$.
+
+The convergence is shown in Fig.~\ref{fig:convergence}. We minimises the frobenius norm the change in the gain matrix compared to the previous iteration.
+In the first 50 iterations, the change in the gain matrix is siginificant: The percentage change in the gain matrix is reduced to $10^{-3}$. After the first 50 iterations, the change in the gain matrix is reduced to $10^{-5}$, and the algorithm converges. We see a linear behaviour in the convergence plot with y-axis set to log scale. It shows that the algorithm converges exponentially as the percentage change reduces exponentially.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/convergence.png}
+    \caption{Convergence of the \textit{StEFCal} algorithm. The y-value is the forbenius norm of the change in the gain matrix compared to the previous iteration.}
+    \label{fig:convergence}
+\end{figure}
+
+\subsection{Model Optimisation}
+At every even iteration, if the algorithm does not converge, the gain matrix is updated by taking the average of the gain matrix from the previous iteration, i.e.
+\begin{align}
+    G_i &= \frac{1}{2} (G_i + G_{i-1}) \notag\\
+    &= G_i - \frac{1}{2}\Delta G_i
+    \label{eq:g_update}
+\end{align}
+where $\Delta G_i = G_i - G_{i-1}$. 
+
+This step in the algorithm prevents G from oscillating between two values instead of converging. However, it sets back the optimisation, creating a stepping back effect, evidently seen in the jagged convergence in Fig~\ref{fig:convergence} Therefore, to speed up the optimisation. We could reduce the coefficient in front of $\Delta G$ in Eq~\ref{eq:g_update}, we call it \textit{correction coefficient}, to reduce the step back effect.
+The effect on the convergence when estimating using $M_{EEPs}$, using various \textit{correction coefficient }is shown in Fig.~\ref{fig:optimisation}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/optimisation.png}
+    \caption{Optimisation of the \textit{StEFCal} algorithm. The y-value is the forbenius norm of the change in the gain matrix compared to the previous iteration. Coefficient = 0.5 is the original algorithm shown in Alg.~\ref{algo:stefcal_algorithm}. The convergence rate to reach $\tau = 10^6$ increases with decreasing coefficient. i.e. update $g_i$ with a lesser contribution from the previous iteration, $g_{i-1}$.}
+    \label{fig:optimisation}
+\end{figure}
+
+The plot in Fig.~\ref{fig:optimisation} shows that the convergence rate to reach $\tau = 10^6$ increases with decreasing coefficient. The number of steps required reduces from about 280 iterations to 230 iterations when the coefficient is reduced from 0.5 to 0.1. Therefore, the performance of the algorithm can be improved by reducing the coefficient in front of $\Delta G$ in Eq~\ref{eq:g_update}.
+
+\section{Error analysis}
+
+In this section we take the average error of the gain matrix over 256 elements. The absolute error is the defined as the average of the difference between the true gain matrix and the estimated gain matrix. The absolute error in amplitude is the average difference between the amplitude of each element in the true gain matrix and the estimated gain matrix. The absolute error in phase is the average difference between the phase of each element in the true gain matrix and the estimated gain matrix.
+
+The absolute error, absolute error in amplitude, and absolute error in phase, for both $G$ estimated from $M_{EEPs}$ and $M_AEP$ are shown in Fig.~\ref{fig:absolute_error_subplots}. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/absolute_error_subplots.png}
+    \caption{The absolute error of the \textit{StEFCal} algorithm. Top: The absolute error between $G_{sol}$ and $G$. Middle: The absolute error of magnitude of the gain. Bottom: the absolute error of the phase of the gain. Orange lines are error of using $M_{EEP}$, and blue lines are error of using $M_{AEPs}$.}
+    \label{fig:absolute_error_subplots}
+\end{figure}
+
+Fig.~\ref{fig:absolute_error_subplots} shows the following results:
+
+\begin{enumerate}
+    \item Using $M_{EEPs}$ gives a lower error in the gain matrix compared to using $M_{AEPs}$. The average error is reduced to 0.20 compared to 0.22 when using $M_{AEPs}$.
+    \item The algorithm is performs well in reducing the error of the amplitude of the gain matrix compared to the phase of the gain matrix.
+    \item The error converges to in the first 5 iterations of the algorithm.
+\end{enumerate}
+
+\paragraph*{$\vb{{M}_{EEPs}}$ give lower error:}Using $M_{EEPs}$ gives a lower error in the gain matrix compared to using $M_{AEPs}$. The average error is reduced to 0.20 compared to 0.22 when using $M_{AEPs}$.The error in the amplitude of the gain matrix is reduced to 0.00 compared to 0.06 when using $M_{AEPs}$.The error in the phase of the gain matrix is reduced to 0.21 compared to 0.22 when using $M_{AEPs}.$
+Therefore, the usage of $M_{EEPs}$ if more accurate than using $M_{AEPs}$ by a significant margin.
+
+\paragraph*{Phase error converges to non-zero value:}
+The error in amplitude converges to 0 for $M_{EEPs}$ while the error in amplitude converges to 0.06 for $M_{AEPs}$. On the other hand, the error in the phase converges to 0.21 for $M_{EEPs}$ and 0.22 for $M_{AEPs}$.
+It shows that the algorithm is more effective in reducing the error in the amplitude of the gain matrix compared to the phase of the gain matrix. This is because that the Frobenius norm in Eqn.~\ref{eq:F_norm_error} is invariant under multiplication of a phase factor. Therefore, the algorithm would converge to gain that has a global phase factor compared to the true gain matrix.
+
+\paragraph*{Convergence in the first 5 iterations:}
+Most of the error is reduced in the first 5 iterations of the algorithm. This is also seen in the convergence plot in Fig.~\ref{fig:convergence}, where the percentage change Frobenius norm reduces to less than 0.01 after about 5 iterations.
+
+\section{Calibration of beamformed voltages}
+The beamformed voltages are given by:
+\begin{equation}
+    b_i = \sum_{i}^{N_{ant}} \hat{w}_i v_i
+    \label{eq:beamformed_voltages}
+\end{equation}
+where $b$ is the beamformed voltages, $\hat{w}_i$ is the weight of the $i$-th antenna, and $v_i$ is the voltage of the $i$-th antenna.
+The weight of the antennas is given by:
+\begin{equation}
+    \hat{w}_i = e^{jk(\sin\theta_0 \cos\phi_0 x_i + \sin\theta_0 \sin\phi_0 y_i)}
+    \label{eq:weight}
+\end{equation}
+where $k$ is the wave number, $\theta_0$ is the zenith angle, $\phi_0$ is the azimuth angle, and $x_i$ and $y_i$ are the x and y coordinates of the $i$-th antenna.
+
+The beamformed voltages in the plane $\phi =0$ is calculated and calibrated using three different gain solutions: $G_{sol}$, $G_{EEPs}$, and $G_{AEPs}$, which is the true gain matrix, the gain matrix using $M_{EEPs}$, and the gain matrix using $M_{AEPs}$, respectively.
+The beamformed voltages are shown in Fig.~\ref{fig:beamformed_voltages}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/beamformed_voltages.png}
+    \caption{The beamformed voltages in the plane $\phi = 0$. The beamformed voltages are calibrated using three different gain solutions: $G_{sol}$, $G_{EEPs}$, and $G_{AEPs}$, which is the true gain matrix, the gain matrix using $M_{EEPs}$, and the gain matrix using $M_{AEPs}$, respectively. Note that the calibrated beamformed voltages using $G_{sol}$ overlap with the calibrated beamformed voltages using $G_{EEPs}$.}
+    \label{fig:beamformed_voltages}
+\end{figure}
+
+The residual error of the beamformed voltages is shown in the Fig.~\ref{fig:beamformed_residual}. The residual error is calculated as the difference between the beamformed voltages using the true gain matrix and the beamformed voltages using the estimated gain matrix. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/beamformed_residual_subplots.png}
+    \caption{The residual error of the beamformed voltages in the plane $\phi = 0$. The residual error is calculated as the difference between the beamformed voltages using the true gain matrix and the beamformed voltages using the estimated gain matrix, $G_{EEPs}$ and $G_{AEPs}$.}
+    \label{fig:beamformed_residual_subplots}
+\end{figure}
+
+The residual plot in Fig.~\ref{fig:beamformed_residual} shows the following results:
+
+\begin{enumerate}
+    \item The residual error varies across the angle $\theta$. 
+    \item The residual error is much lower when using $G_{EEPs}$(about 0.0001 dBV)compared to $G_{AEPs}$(about 0.14 dBV).
+\end{enumerate}
+
+\section{Calibrated Station Beam}
+The station beam is then calibrated by the most accurate gain solution, $G_{EEPs}$. The calibrated station beam is given by:
+\begin{equation}
+    b = \sum_{i}^{N_{ant}} \hat{w}_i G_{EEPs} v_i
+    \label{eq:station_beam}
+\end{equation}
+where the weight of the antennas is given by Eq.~\ref{eq:weight} with $\theta_0 = 40(degree)$ and $\phi_0 = 80(dergee)$. The uncalibrated station beam and calibrated beam is shown in Fig.~\ref{fig:uncalibrated_station_beam} and Fig.~\ref{fig:calibrated_station_beam}, respectively.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/uncalibrated_station_beam.png}
+    \caption{Uncalibrated station beam pointed at $\theta_0 = 40(degree)$ and $\phi_0 = 80(degree)$.}
+    \label{fig:uncalibrated_station_beam}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/calibrated_station_beam.png}
+    \caption{The calibrated station beam using the most accurate gain solution, $G_{EEPs}$, pointed at $\theta_0 = 40(degree)$ and $\phi_0 = 80(degree).$}
+    \label{fig:calibrated_station_beam}
+\end{figure}
+
+
+
+\end{document}
