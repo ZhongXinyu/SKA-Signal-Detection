@@ -1,0 +1,11 @@
+name: SKA_coursework_xz447
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python=3.8
+  - numpy
+  - matplotlib
+  - scipy
+  
