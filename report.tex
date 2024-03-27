@@ -1,4 +1,4 @@
-\documentclass[10pt,a4paper,twocolumn]{article}
+\documentclass[10pt,a4paper,twocolumn]{paper}
 
 \usepackage{import}
 \usepackage{amssymb}
@@ -201,7 +201,7 @@ The beamformed voltages are shown in Fig.~\ref{fig:beamformed_voltages}.
     \label{fig:beamformed_voltages}
 \end{figure}
 
-The residual error of the beamformed voltages is shown in the Fig.~\ref{fig:beamformed_residual}. The residual error is calculated as the difference between the beamformed voltages using the true gain matrix and the beamformed voltages using the estimated gain matrix. 
+The residual error of the beamformed voltages is shown in the Fig.~\ref{fig:beamformed_residual_subplots}. The residual error is calculated as the difference between the beamformed voltages using the true gain matrix and the beamformed voltages using the estimated gain matrix. 
 
 \begin{figure}[H]
     \centering
@@ -210,20 +210,22 @@ The residual error of the beamformed voltages is shown in the Fig.~\ref{fig:beam
     \label{fig:beamformed_residual_subplots}
 \end{figure}
 
-The residual plot in Fig.~\ref{fig:beamformed_residual} shows the following results:
+The residual plot in Fig.~\ref{fig:beamformed_residual_subplots} shows the following results:
 
 \begin{enumerate}
-    \item The residual error varies across the angle $\theta$. 
-    \item The residual error is much lower when using $G_{EEPs}$(about 0.0001 dBV)compared to $G_{AEPs}$(about 0.14 dBV).
+    \item The residual error varies across the angle $\theta$. However, the distribution of the error is similar for $G_{EEPs}$ and $G_{AEPs}$.
+    \item The residual error is about 10 times lower when using $G_{EEPs}$(about 0.01 dBV)compared to $G_{AEPs}$(about 1.0 dBV).
 \end{enumerate}
 
 \section{Calibrated Station Beam}
 The station beam is then calibrated by the most accurate gain solution, $G_{EEPs}$. The calibrated station beam is given by:
 \begin{equation}
-    b = \sum_{i}^{N_{ant}} \hat{w}_i G_{EEPs} v_i
+    b = \sum_{i}^{N_{ant}} \hat{w}_i G_{EEPs} v_i e^{-ik\sin\theta\cos\phi x_i + ik\sin\theta\sin\phi y_i}
     \label{eq:station_beam}
 \end{equation}
 where the weight of the antennas is given by Eq.~\ref{eq:weight} with $\theta_0 = 40(degree)$ and $\phi_0 = 80(dergee)$. The uncalibrated station beam and calibrated beam is shown in Fig.~\ref{fig:uncalibrated_station_beam} and Fig.~\ref{fig:calibrated_station_beam}, respectively.
+
+The calibrated station beam is more focused compared to the uncalibrated station beam. 
 
 \begin{figure}[H]
     \centering
