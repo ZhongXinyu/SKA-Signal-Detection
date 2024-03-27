@@ -2,6 +2,9 @@
 
 \usepackage{import}
 \usepackage{amssymb}
+\usepackage{biblatex}
+\nocite{*}
+\addbibresource{bibliography.bib}
 \import{../../00Notes_and_Summaries/Template/}{format.tex}
 
 \newcommand{\topic}{Astronomy in the SKA era: SKA-low mini project}
@@ -11,11 +14,10 @@
 \title{\topic}
 \begin{titlepage}
     \maketitle
+    Word count: 1863
 \end{titlepage}
 
 \newpage
-
-\section*{Introduction}
 
 \section{Calibration Equation}
 The calibration equation is given by:
@@ -48,7 +50,7 @@ Figure \ref{fig:R_M_AEP_M_EEPs} shows the plot of log scale of absolute value of
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{figures/R_M_AEP_M_EEPs.png}
+    \includegraphics[width=0.55\textwidth]{figures/R_M_AEP_M_EEPs.png}
     \caption{The plot of log scale of absolute value of $\vb{R}$, $\vb{M}_{AEP}$, and $\vb{M}_{EEPs}$. The horizontal and vertical axis are the antenna indices. The logarithmic value of the diagonal terms are shown as the empty diagonal, as their log scale is negative infinity.}
     \label{fig:R_M_AEP_M_EEPs}
 \end{figure}
@@ -81,11 +83,9 @@ The plot of 256 EEPs and the AEP is shown in Fig.~\ref{fig:EEPs_and_AEP}.
     \label{fig:EEPs_and_AEP}
 \end{figure}
 
-The plot in Fig.~\ref{fig:EEPs_and_AEP} shows the following results: The variability of the EEPs is small at low absolute $\theta$ value (\~5dbV between the maximum and minimum value at $\theta = 0$) while large at high absolute $\theta$ value (\~50dbV between the maximum and minimum value at $\theta = 0$)
+The plot in Fig.~\ref{fig:EEPs_and_AEP} shows the following results: The variability of the EEPs is small at low absolute $\theta$ value (5dbV between the maximum and minimum value at $\theta = 0$) while large at high absolute $\theta$ value (about 50dbV between the maximum and minimum value at $\theta = 0$)
 
 \section{\textit{StEFCal} Algorithm}
-The EEP in the 
-
 The \textit{StEFCal} algorithm is implemented using python, using the algorithm described in Algo.~\ref{algo:stefcal_algorithm}. 
 
 \begin{algorithm}
@@ -110,13 +110,13 @@ The \textit{StEFCal} algorithm is implemented using python, using the algorithm 
 \end{algorithm}
 
 
-One practical issue with the algorithm is that the algorithm may not always converge as the gain matrix could oscillate between two values. The issue was resolved in the original paper by updating the gain with an average of the gain matrix from the previous iteration and the current iteration.
+One practical issue with the algorithm is that the algorithm may not always converge as the gain matrix could oscillate between two values. The issue was resolved in the original paper by updating the gain with an average of the gain matrix from the previous iteration and the current iteration\cite{Salvini_2014}.
 
-The solution to the problem is that at every even iteration, the algorithm checks for convergence. The algorithm converges if the percentage change in the gain matrix is less than the threshold $\tau$. If the algorithm does not converge, the gain matrix is updated by taking the average of the gain matrix from the previous iteration and the current iteration. 
+At every even iteration, the algorithm checks for convergence. The algorithm converges if the percentage change in the gain matrix is less than the threshold $\tau$. If the algorithm does not converge, the gain matrix is updated by taking the average of the gain matrix from the previous iteration and the current iteration \cite{Salvini_2014}.
 
 The threshold $\tau$ in the \textit{StEFCal} algorithm is set to $10^{-5}$.It takes 230 iterations to converge if we use $M_{AEP}$ and 192 iterations to converge if we use $M_{EEPs}$.
 
-The convergence is shown in Fig.~\ref{fig:convergence}. We minimises the frobenius norm the change in the gain matrix compared to the previous iteration.
+The convergence is shown in Fig.~\ref{fig:convergence}. The Frobenius norm of the change in the gain matrix compared to the previous iteration is reduced exponentially to $10^{-5}$.
 In the first 50 iterations, the change in the gain matrix is siginificant: The percentage change in the gain matrix is reduced to $10^{-3}$. After the first 50 iterations, the change in the gain matrix is reduced to $10^{-5}$, and the algorithm converges. We see a linear behaviour in the convergence plot with y-axis set to log scale. It shows that the algorithm converges exponentially as the percentage change reduces exponentially.
 
 \begin{figure}[H]
@@ -145,7 +145,7 @@ The effect on the convergence when estimating using $M_{EEPs}$, using various \t
     \label{fig:optimisation}
 \end{figure}
 
-The plot in Fig.~\ref{fig:optimisation} shows that the convergence rate to reach $\tau = 10^6$ increases with decreasing coefficient. The number of steps required reduces from about 280 iterations to 230 iterations when the coefficient is reduced from 0.5 to 0.1. Therefore, the performance of the algorithm can be improved by reducing the coefficient in front of $\Delta G$ in Eq~\ref{eq:g_update}.
+The plot in Fig.~\ref{fig:optimisation} shows that the convergence rate to reach $\tau = 10^{-6}$ increases with decreasing coefficient. The number of steps required reduces from about 280 iterations to 230 iterations when the coefficient is reduced from 0.5 to 0.1. Therefore, the performance of the algorithm can be improved by reducing the coefficient in front of $\Delta G$ in Eq~\ref{eq:g_update} to 0.1.
 
 \section{Error analysis}
 
@@ -168,7 +168,7 @@ Fig.~\ref{fig:absolute_error_subplots} shows the following results:
     \item The error converges to in the first 5 iterations of the algorithm.
 \end{enumerate}
 
-\paragraph*{$\vb{{M}_{EEPs}}$ give lower error:}Using $M_{EEPs}$ gives a lower error in the gain matrix compared to using $M_{AEPs}$. The average error is reduced to 0.20 compared to 0.22 when using $M_{AEPs}$.The error in the amplitude of the gain matrix is reduced to 0.00 compared to 0.06 when using $M_{AEPs}$.The error in the phase of the gain matrix is reduced to 0.21 compared to 0.22 when using $M_{AEPs}.$
+\paragraph*{$\vb{{M}_{EEPs}}$ give lower error:}Using $M_{EEPs}$ gives a lower error in the gain matrix compared to using $M_{AEPs}$. The average error is reduced to 0.20 compared to 0.22 when using $M_{AEPs}$.The error in the amplitude of the gain matrix is reduced to 0.01 compared to 0.06 when using $M_{AEPs}$.The error in the phase of the gain matrix is reduced to 0.21 compared to 0.22 when using $M_{AEPs}.$
 Therefore, the usage of $M_{EEPs}$ if more accurate than using $M_{AEPs}$ by a significant margin.
 
 \paragraph*{Phase error converges to non-zero value:}
@@ -181,7 +181,7 @@ Most of the error is reduced in the first 5 iterations of the algorithm. This is
 \section{Calibration of beamformed voltages}
 The beamformed voltages are given by:
 \begin{equation}
-    b_i = \sum_{i}^{N_{ant}} \hat{w}_i v_i
+    b_i = \sum_{i}^{N_{ant}} \hat{w}_i v_i e^{-ik\sin\theta\cos\phi x_i + ik\sin\theta\sin\phi y_i}
     \label{eq:beamformed_voltages}
 \end{equation}
 where $b$ is the beamformed voltages, $\hat{w}_i$ is the weight of the $i$-th antenna, and $v_i$ is the voltage of the $i$-th antenna.
@@ -225,7 +225,7 @@ The station beam is then calibrated by the most accurate gain solution, $G_{EEPs
 \end{equation}
 where the weight of the antennas is given by Eq.~\ref{eq:weight} with $\theta_0 = 40(degree)$ and $\phi_0 = 80(dergee)$. The uncalibrated station beam and calibrated beam is shown in Fig.~\ref{fig:uncalibrated_station_beam} and Fig.~\ref{fig:calibrated_station_beam}, respectively.
 
-The calibrated station beam is more focused compared to the uncalibrated station beam. 
+Fig \ref{fig:uncalibrated_station_beam} and Fig \ref{fig:calibrated_station_beam} shows the contour plot of the uncalibrated station beam and the calibrated station beam, respectively. The image has double peaks at about $(\theta = 15^{\circ}, \phi = 90^{\circ})$,and $(\theta = 15^{\circ}, \phi = 270^{\circ})$, and a saddle point at the origin. The calibrated station beam is more focused on the direction of the source compared to the uncalibrated station beam.
 
 \begin{figure}[H]
     \centering
@@ -241,6 +241,11 @@ The calibrated station beam is more focused compared to the uncalibrated station
     \label{fig:calibrated_station_beam}
 \end{figure}
 
+% add appendix
+\clearpage
+\appendix
+\section{Use of generative AI}
+Chat-GPT 3.5, accessible for free at https://chat.openai.com/, was utilized for certain small sections of the source code. These instances, where using Chat-GPT provided a more efficient solution than other sources could offer, are clearly marked in the code with comments. Additionally, Chat-GPT helped in formatting some of the tables in this report using LATEX. The concepts and execution of this project are entirely my own, built upon the knowledge gained from this course's materials, my own experiences, and the cited references.
 
-
+\printbibliography
 \end{document}
