@@ -225,19 +225,21 @@ The station beam is then calibrated by the most accurate gain solution, $G_{EEPs
 \end{equation}
 where the weight of the antennas is given by Eq.~\ref{eq:weight} with $\theta_0 = 40(degree)$ and $\phi_0 = 80(dergee)$. The uncalibrated station beam and calibrated beam is shown in Fig.~\ref{fig:uncalibrated_station_beam} and Fig.~\ref{fig:calibrated_station_beam}, respectively.
 
-Fig \ref{fig:uncalibrated_station_beam} and Fig \ref{fig:calibrated_station_beam} shows the contour plot of the uncalibrated station beam and the calibrated station beam, respectively. The image has double peaks at about $(\theta = 15^{\circ}, \phi = 90^{\circ})$,and $(\theta = 15^{\circ}, \phi = 270^{\circ})$, and a saddle point at the origin. The calibrated station beam is more focused on the direction of the source compared to the uncalibrated station beam.
+Fig \ref{fig:uncalibrated_station_beam} and Fig \ref{fig:calibrated_station_beam} shows the contour plot of the uncalibrated station beam and the calibrated station beam, respectively. The image has a peak at ($\theta_0 = 40^{\circ}$, $\phi_0 = 80^{\circ}$), which is expected as the station beam is pointed at $\theta_0 = 40^{\circ}$ and $\phi_0 = 80^{\circ}$. 
+
+Note that there is a discontinuity at $\phi$ = 0 in the calibrated station beam. This is due to the fact that the zenith angle $\theta_0$ is not equal to 0. 
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\textwidth]{figures/uncalibrated_station_beam.png}
-    \caption{Uncalibrated station beam pointed at $\theta_0 = 40(degree)$ and $\phi_0 = 80(degree)$.}
+    \caption{Uncalibrated station beam pointed at $\theta_0 = 40^{\circ}$ and $\phi_0 = 80^{\circ}$.}
     \label{fig:uncalibrated_station_beam}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\textwidth]{figures/calibrated_station_beam.png}
-    \caption{The calibrated station beam using the most accurate gain solution, $G_{EEPs}$, pointed at $\theta_0 = 40(degree)$ and $\phi_0 = 80(degree).$}
+    \caption{The calibrated station beam using the most accurate gain solution, $G_{EEPs}$, pointed at $\theta_0 = 40^{\circ}$ and $\phi_0 = 80^{\circ}.$}
     \label{fig:calibrated_station_beam}
 \end{figure}
 
