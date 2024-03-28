@@ -28,7 +28,6 @@ The data for the coursework is in the root directory of this repository. The dat
 
 ## Relevant Folders
 The other folders in the root directory of this repository are:
-    - `figures`: contains the figures generated in the code and used in the report.
     - `harp_beam`: contains the original code for the coursework.
 
 ## License
